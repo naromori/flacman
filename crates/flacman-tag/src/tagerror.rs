@@ -3,20 +3,14 @@ use thiserror::Error;
 
 
 #[derive(Error, Debug)]
-pub enum FsError {
+pub enum TagError {
     #[error("IO error: {0}")]
     Io(#[from] std::io::Error),
 
     #[error("Path was not found: {0}")]
     NotFound(PathBuf),
 
-    #[error("File already exists: {0}")]
-    AlreadyExists(PathBuf),
-
-    #[error("Source and destination are the same: {0}")]
-    SameFile(PathBuf),
-
-    #[error("You have no permission to edit that file: {0}")]
+    #[error("You have no permission to work with that file: {0}")]
     PermissionError(PathBuf),
 
     #[error("Cannot operate on directory: {0}")]
@@ -25,8 +19,9 @@ pub enum FsError {
     #[error("Path is not a directory: {0}")]
     NotADirectory(PathBuf),
 
-    #[error("Error while walking directory")]
-    WalkDir(#[from] walkdir::Error),
+    #[error("Error reading file metadata: {0}")]
+    LoftyReadError(#[from] lofty::error::LoftyError)
+    
 }
 
-pub type Result<T> = std::result::Result<T, FsError>;
+pub type Result<T> = std::result::Result<T, TagError>;

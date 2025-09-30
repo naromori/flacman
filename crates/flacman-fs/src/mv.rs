@@ -8,7 +8,7 @@ use crate::FsError;
 /// Check if source file exists and is accessible
 fn validate_source(path: &Path) -> Result<()> {
     if !path.exists() {
-        return Err(FsError::PathNotFound(path.to_path_buf()));
+        return Err(FsError::NotFound(path.to_path_buf()));
     }
 
     if path.is_dir() {
@@ -32,12 +32,12 @@ fn validate_destination(source: &Path, dest: &Path, allow_overwrite: bool) -> Re
 
     if let Some(parent) = dest.parent() {
         if !parent.exists() {
-            return Err(FsError::PathNotFound(parent.to_path_buf()));
+            return Err(FsError::NotFound(parent.to_path_buf()));
         }
     }
 
     if dest.exists() && !allow_overwrite {
-        return Err(FsError::FileAlreadyExists(dest.to_path_buf()));
+        return Err(FsError::AlreadyExists(dest.to_path_buf()));
     }
 
     Ok(())
@@ -143,13 +143,13 @@ pub fn symlink_file<P: AsRef<Path>, Q: AsRef<Path>>(
 
     if let Some(parent) = dst.parent() {
         if !parent.exists() {
-            return Err(FsError::PathNotFound(parent.to_path_buf()));
+            return Err(FsError::NotFound(parent.to_path_buf()));
         }
     }
 
     if dst.exists() {
         if !overwrite {
-            return Err(FsError::FileAlreadyExists(dst.to_path_buf()));
+            return Err(FsError::AlreadyExists(dst.to_path_buf()));
         }
         validate_writable(dst)?;
         fs::remove_file(dst)?;
@@ -185,13 +185,13 @@ pub fn hardlink_file<P: AsRef<Path>, Q: AsRef<Path>>(
 
     if let Some(parent) = dst.parent() {
         if !parent.exists() {
-            return Err(FsError::PathNotFound(parent.to_path_buf()));
+            return Err(FsError::NotFound(parent.to_path_buf()));
         }
     }
 
     if dst.exists() {
         if !overwrite {
-            return Err(FsError::FileAlreadyExists(dst.to_path_buf()));
+            return Err(FsError::AlreadyExists(dst.to_path_buf()));
         }
         validate_writable(dst)?;
         fs::remove_file(dst)?;
@@ -262,7 +262,7 @@ mod tests {
 
         // Should fail without overwrite
         let result = copy_file(&src, &dst, false);
-        assert!(matches!(result, Err(FsError::FileAlreadyExists(_))));
+        assert!(matches!(result, Err(FsError::AlreadyExists(_))));
     }
 
     #[test]

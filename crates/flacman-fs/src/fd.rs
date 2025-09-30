@@ -23,7 +23,7 @@ pub fn walkdir<P: AsRef<Path>>(
 
     // Validate path upfront
     if !walk_path.exists() {
-        return Err(FsError::PathNotFound(walk_path.to_path_buf()));
+        return Err(FsError::NotFound(walk_path.to_path_buf()));
     }
 
     if walk_path.is_file() {
@@ -61,7 +61,7 @@ pub fn walkdir_lenient<P: AsRef<Path>>(
     let walk_path: &Path = path.as_ref();
 
     if !walk_path.exists() {
-        return Err(FsError::PathNotFound(walk_path.to_path_buf()));
+        return Err(FsError::NotFound(walk_path.to_path_buf()));
     }
 
     if walk_path.is_file() {
@@ -183,7 +183,7 @@ mod tests {
     #[test]
     fn test_walkdir_nonexistent() {
         let result = walkdir("/nonexistent/path/xyz");
-        assert!(matches!(result, Err(FsError::PathNotFound(_))));
+        assert!(matches!(result, Err(FsError::NotFound(_))));
     }
 
     #[test]
