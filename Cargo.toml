@@ -1,6 +1,6 @@
 [workspace]
 
-members = ["crates/flacman","crates/flacman-core", "crates/flacman-fs", "crates/flacman-tag", "crates/flacman-registry"]
+members = ["crates/flacman","crates/flacman-core", "crates/flacman-fs", "crates/flacman-tag", "crates/flacman-registry", "crates/flacman-args"]
 resolver = "3"
 
 [workspace.dependencies]
